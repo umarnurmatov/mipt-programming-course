@@ -8,7 +8,7 @@ int main()
     triangle_array_t arr; 
     utils_triangle_array_init(&arr, 5);
     
-    utils_trianlge_array_set(&arr, 5, 1, 0);
+    utils_triangle_array_set(&arr, 5, 1, 0);
 
     utils_triangle_array_print(&arr);
 

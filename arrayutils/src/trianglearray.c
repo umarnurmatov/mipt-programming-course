@@ -27,7 +27,7 @@ enum array_err_t utils_triangle_array_init(triangle_array_t* arr, size_t height)
     return ARRAY_ERR_NONE;
 }
 
-enum array_err_t utils_trianlge_array_set(triangle_array_t* arr, arr_data_t elem, size_t iy, size_t ix)
+enum array_err_t utils_triangle_array_set(triangle_array_t* arr, arr_data_t elem, size_t iy, size_t ix)
 {
     utils_assert(arr != NULL);
     utils_assert(arr->ptr != NULL);
@@ -41,7 +41,7 @@ enum array_err_t utils_trianlge_array_set(triangle_array_t* arr, arr_data_t elem
     return ARRAY_ERR_NONE;
 }
 
-enum array_err_t utils_trianlge_array_get(triangle_array_t* arr, arr_data_t* elem, size_t iy, size_t ix)
+enum array_err_t utils_triangle_array_get(triangle_array_t* arr, arr_data_t* elem, size_t iy, size_t ix)
 {
     utils_assert(arr != NULL);
     utils_assert(arr->ptr != NULL);
