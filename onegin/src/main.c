@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "file_linebuf.h"
-#include "file_strbuf.h"
+#include "fileline_arr.h"
 #include "ioutils.h"
 
 static const size_t strbuf_size    = 1000ul;
@@ -34,16 +34,23 @@ int main()
     // free(tmp);
 
 
-    file_strbuf_t strbuf = {
-        onegin_linecnt,
+    fileline_arr_t filearr = {
+        0ul,
         NULL
     };
 
-    file_strbuf_read(&strbuf, file);
-    file_strbuf_swap(&strbuf, 0ul, 1ul);
-    printf("%s", file_strbuf_get(&strbuf, 0));
-    printf("%s", file_strbuf_get(&strbuf, 1));
-    file_strbuf_free(&strbuf);
+    fileline_arr_read(&filearr, file);
+    printf("%lu\n", filearr.lcnt);
+    fileline_arr_swap(&filearr, 0ul, 1ul);
+
+    fileline_arr_bubblesort(&filearr, fileline_arr_linecmp);
+
+    for(size_t i = 0; i < filearr.lcnt; ++i)
+        fprintf(stderr, "%s\n", fileline_arr_get(&filearr, i)->str);
+
+    // qsort(filearr.arr, filearr.lcnt, sizeof(filearr.arr[0]), fileline_arr_linecmp);
+    //
+    fileline_arr_free(&filearr);
 
     fclose(file);
     return 0;
