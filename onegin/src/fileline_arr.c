@@ -2,13 +2,19 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #include "logutils.h"
+#include "memutils.h"
+#include "stringutils.h"
 
 io_err_t fileline_arr_read(fileline_arr_t* filearr, FILE* stream)
 {
+    utils_assert(filearr != NULL);
+    utils_assert(stream  != NULL);
+
     size_t file_size_b = get_file_size(stream);
-    char* buffer = (char*)calloc(1ul, file_size_b);
+    char* buffer = (char*)calloc(1ul, file_size_b + 1ul);
     if(buffer == NULL) {
         utils_log(
             LOG_LEVEL_ERR, 
@@ -86,7 +92,25 @@ int fileline_arr_linecmp(fileline_t* line_a, fileline_t* line_b)
 
 int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b)
 {
-    return -1 * fileline_arr_linecmp(line_a, line_b);
+    utils_assert(line_a != NULL);
+    utils_assert(line_b != NULL);
+
+    size_t line_a_len = utils_strlen(line_a->str);
+    size_t line_b_len = utils_strlen(line_b->str);
+    size_t min_len    = line_a_len < line_b_len ? line_a_len : line_b_len;
+
+    char* str_a = line_a->str;
+    char* str_b = line_b->str;
+    for(size_t line_i = min_len; line_i > 0; --line_i) {
+        if(!isalpha(str_a[line_i]) || !isalpha(str_b[line_i]))
+            continue;
+        if(str_a[line_i] > str_b[line_i])
+            return 1;
+        else if(str_a[line_i] < str_b[line_i])
+            return -1;
+    }
+
+    return 0;
 }
 
 
@@ -95,7 +119,7 @@ void fileline_arr_bubblesort(fileline_arr_t* filearr, fileline_arr_cmp_t cmp)
     utils_assert(filearr != NULL);
 
     for(size_t ia = 0ul; ia < filearr->lcnt; ++ia)
-        for(size_t ib = ia; ib < filearr->lcnt; ++ib)
+        for(size_t ib = 0ul; ib < filearr->lcnt - ia; ++ib)
             if(cmp(fileline_arr_get(filearr, ia), fileline_arr_get(filearr, ib)) > 0)
                 fileline_arr_swap(filearr, ia, ib);
 }
@@ -106,8 +130,7 @@ void fileline_arr_free(fileline_arr_t* filearr)
     utils_assert(filearr->buffer != NULL);
     utils_assert(filearr->arr    != NULL);
 
-    free(filearr->buffer);
-    free(filearr->arr);
+    nfree(filearr->buffer);
+    nfree(filearr->arr);
 }
-
 
