@@ -5,6 +5,7 @@
 #include "logutils.h"
 #include "optutils.h"
 #include "utils.h"
+#include "sortutils.h"
 
 static utils_long_opt_t long_opts[] = 
 {
@@ -34,7 +35,9 @@ int main(int argc, char* argv[])
 
     fileline_arr_swap(&filearr, 0ul, 1ul);
 
-    fileline_arr_bubblesort(&filearr, fileline_arr_linercmp);
+    utils_bubblesort(filearr.arr, filearr.lcnt, sizeof(fileline_t), (utils_cmp)fileline_arr_linecmp);
+
+    printf("%s\n", filearr.arr[0].str);
 
     fileline_arr_free(&filearr);
 

@@ -28,7 +28,5 @@ int fileline_arr_linecmp(fileline_t* line_a, fileline_t* line_b);
 
 int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b);
 
-void fileline_arr_bubblesort(fileline_arr_t* filearr, fileline_arr_cmp_t cmp);
-
 void fileline_arr_free(fileline_arr_t* filearr);
 

@@ -115,17 +115,6 @@ int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b)
     return 0;
 }
 
-
-void fileline_arr_bubblesort(fileline_arr_t* filearr, fileline_arr_cmp_t cmp)
-{
-    utils_assert(filearr != NULL);
-
-    for(size_t ia = 0ul; ia < filearr->lcnt; ++ia)
-        for(size_t ib = 0ul; ib < filearr->lcnt - ia; ++ib)
-            if(cmp(fileline_arr_get(filearr, ia), fileline_arr_get(filearr, ib)) > 0)
-                fileline_arr_swap(filearr, ia, ib);
-}
-
 void fileline_arr_free(fileline_arr_t* filearr)
 {
     utils_assert(filearr         != NULL);
