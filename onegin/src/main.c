@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
     fileline_arr_swap(&filearr, 0ul, 1ul);
 
-    fileline_arr_bubblesort(&filearr, fileline_arr_linecmp);
+    fileline_arr_bubblesort(&filearr, fileline_arr_linercmp);
 
     fileline_arr_free(&filearr);
 

@@ -101,7 +101,9 @@ int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b)
 
     char* str_a = line_a->str;
     char* str_b = line_b->str;
-    for(size_t line_i = min_len; line_i > 0; --line_i) {
+    size_t line_i = 0ul;
+    for(size_t line_i_rev = 0ul; line_i_rev < min_len; ++line_i_rev) {
+        line_i = min_len - line_i_rev - 1ul;
         if(!isalpha(str_a[line_i]) || !isalpha(str_b[line_i]))
             continue;
         if(str_a[line_i] > str_b[line_i])
