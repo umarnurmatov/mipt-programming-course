@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <getopt.h>
+#include <stdlib.h>
 
 #include "colorutils.h"
 #include "fileline_arr.h"
@@ -10,8 +11,10 @@
 
 static utils_long_opt_t long_opts[] = 
 {
-    { OPT_ARG_REQUIRED, "file", NULL, 0, 0 },
-    { OPT_ARG_REQUIRED, "out",  NULL, 0, 0 }
+    { OPT_ARG_REQUIRED, "file"     , NULL, 0, 0 },
+    { OPT_ARG_REQUIRED, "out-sort" , NULL, 0, 0 },
+    { OPT_ARG_REQUIRED, "out-rsort", NULL, 0, 0 },
+    { OPT_ARG_REQUIRED, "out-ssort", NULL, 0, 0 }
 };
 
 int main(int argc, char* argv[])
@@ -25,8 +28,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(!long_opts[1].is_set) {
-        utils_colored_fprintf(stderr, ANSI_COLOR_RED, "Specify output file\n");
+    if(!long_opts[1].is_set || !long_opts[2].is_set || !long_opts[3].is_set) {
+        utils_colored_fprintf(stderr, ANSI_COLOR_RED, "Specify output file(-s)\n");
         return 1;
     }
 
@@ -43,20 +46,29 @@ int main(int argc, char* argv[])
     fileline_arr_read(&filearr, input_file);
     fclose(input_file);
 
-    FILE* output_file = open_file(long_opts[1].arg, "a");
-    if(input_file == NULL)
+    FILE* output_file_sort = open_file(long_opts[1].arg, "w");
+    if(output_file_sort == NULL)
         return 1;
 
     utils_bubblesort(filearr.arr, filearr.lcnt, sizeof(filearr.arr[0]), (utils_cmp)fileline_arr_linecmp);
-    fileline_arr_put(&filearr, output_file);
+    fileline_arr_put(&filearr, output_file_sort);
+    fclose(output_file_sort);
     
-    // utils_bubblesort(filearr.arr, filearr.lcnt, sizeof(filearr.arr[0]), (utils_cmp)fileline_arr_linercmp);
-    // fileline_arr_put(&filearr, output_file);
-    
-    utils_bubblesort(filearr.arr, filearr.lcnt, sizeof(filearr.arr[0]), (utils_cmp)fileline_arr_seqcmp);
-    fileline_arr_put(&filearr, output_file);
+    FILE* output_file_rsort = open_file(long_opts[2].arg, "w");
+    if(output_file_rsort == NULL)
+        return 1;
 
-    fclose(output_file);
+    qsort(filearr.arr, filearr.lcnt, sizeof(filearr.arr[0]), (utils_cmp)fileline_arr_linercmp);
+    fileline_arr_put(&filearr, output_file_rsort);
+    fclose(output_file_rsort);
+    
+    FILE* output_file_seqsort = open_file(long_opts[3].arg, "w");
+    if(output_file_seqsort == NULL)
+        return 1;
+
+    qsort(filearr.arr, filearr.lcnt, sizeof(filearr.arr[0]), (utils_cmp)fileline_arr_seqcmp);
+    fileline_arr_put(&filearr, output_file_seqsort);
+    fclose(output_file_seqsort);
 
     fileline_arr_free(&filearr);
 

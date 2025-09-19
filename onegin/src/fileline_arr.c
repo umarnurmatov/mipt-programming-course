@@ -170,7 +170,7 @@ void fileline_arr_free(fileline_arr_t* filearr)
     utils_assert(filearr->buffer != NULL);
     utils_assert(filearr->arr    != NULL);
 
-    nfree(filearr->buffer);
-    nfree(filearr->arr);
+    NFREE(filearr->buffer);
+    NFREE(filearr->arr);
 }
 
