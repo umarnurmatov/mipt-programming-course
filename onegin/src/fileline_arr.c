@@ -116,14 +116,20 @@ int fileline_arr_linercmp(const fileline_t* line_a, const fileline_t* line_b)
     char* str_a_ptr = str_a + line_a->len;
     char* str_b_ptr = str_b + line_b->len;
 
-    while((str_a_ptr != str_a) && (str_b_ptr != str_b))
+    for( ;; )
     {
         if(!isalpha(*str_a_ptr)) {
+            if(str_a_ptr == str_a)
+                return -1;
+
             --str_a_ptr;
             continue;
         }
 
         if(!isalpha(*str_b_ptr)) {
+            if(str_b_ptr == str_b)
+                return 1;
+
             --str_b_ptr;
             continue;
         }
@@ -132,6 +138,9 @@ int fileline_arr_linercmp(const fileline_t* line_a, const fileline_t* line_b)
             return 1;
         else if(*str_a_ptr < *str_b_ptr)
             return -1;
+
+        if(str_a_ptr == str_a || str_b_ptr == str_b)
+            break;
 
         --str_a_ptr;
         --str_b_ptr;
