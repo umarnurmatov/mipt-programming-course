@@ -5,6 +5,7 @@
 
 #include "assertutils.h"
 #include "stringutils.h"
+#include "sortutils.h"
 
 void strswp_buffer(char* str_a, char* str_b, char* str_tmp)
 {
@@ -38,22 +39,6 @@ void strswp_char(char* str_a, char* str_b)
 
 void strswp_chunks(char* str_a, char* str_b)
 {
-    utils_assert(str_a != NULL);
-    utils_assert(str_b != NULL);
-
-    size_t  str_len = utils_strlen(str_a);
-    size_t  str_i   = 0ul;
-    int64_t buf     = 0l;
-
-    for( ; str_i < str_len; ++str_i) {
-        if(str_i + sizeof(int64_t) >= str_len)
-            break;
-
-        memcpy(&buf,          str_a + str_i, sizeof(int64_t));
-        memcpy(str_a + str_i, str_b + str_i, sizeof(int64_t));
-        memcpy(str_b + str_i, &buf         , sizeof(int64_t));
-    }
-
-    strswp_char(str_a + str_i, str_b + str_i);
+    utils_swap(str_a, str_b, sizeof(char));
 }
 

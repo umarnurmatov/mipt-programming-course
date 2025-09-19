@@ -28,5 +28,9 @@ int fileline_arr_linecmp(fileline_t* line_a, fileline_t* line_b);
 
 int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b);
 
+int fileline_arr_seqcmp(fileline_t* line_a, fileline_t* line_b);
+
+io_err_t fileline_arr_put(fileline_arr_t* filearr, FILE* stream);
+
 void fileline_arr_free(fileline_arr_t* filearr);
 

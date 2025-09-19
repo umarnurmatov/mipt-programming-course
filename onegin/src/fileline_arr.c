@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <ctype.h>
 
+#include "ioutils.h"
 #include "logutils.h"
 #include "memutils.h"
 #include "stringutils.h"
@@ -23,7 +24,14 @@ io_err_t fileline_arr_read(fileline_arr_t* filearr, FILE* stream)
         return IO_ERR_ALLOCATION_FAIL;
     }
 
-    fread(buffer, sizeof(buffer[0]), file_size_b, stream);
+    size_t bytes_read = fread(buffer, sizeof(buffer[0]), file_size_b, stream);
+    if(bytes_read < file_size_b) {
+        utils_log(
+            LOG_LEVEL_ERR, 
+            "failed to read file"
+        );
+        return IO_ERR_EOF_REACHED;
+    }
 
     // count lines except blank
     // because of strtok()
@@ -97,22 +105,52 @@ int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b)
 
     size_t line_a_len = utils_strlen(line_a->str);
     size_t line_b_len = utils_strlen(line_b->str);
-    size_t min_len    = line_a_len < line_b_len ? line_a_len : line_b_len;
 
     char* str_a = line_a->str;
     char* str_b = line_b->str;
-    size_t line_i = 0ul;
-    for(size_t line_i_rev = 0ul; line_i_rev < min_len; ++line_i_rev) {
-        line_i = min_len - line_i_rev - 1ul;
-        if(!isalpha(str_a[line_i]) || !isalpha(str_b[line_i]))
+
+    char* str_a_ptr = str_a + line_a_len;
+    char* str_b_ptr = str_b + line_b_len;
+
+    while((str_a_ptr != str_a) || (str_b_ptr != str_b))
+    {
+        --str_a_ptr;
+        --str_b_ptr;
+
+        if(!isalpha(*str_a_ptr) || !isalpha(*str_b_ptr))
             continue;
-        if(str_a[line_i] > str_b[line_i])
+
+        if(*str_a_ptr > *str_b_ptr)
             return 1;
-        else if(str_a[line_i] < str_b[line_i])
+        else if(*str_a_ptr < *str_b_ptr)
             return -1;
     }
 
     return 0;
+}
+
+int fileline_arr_seqcmp(fileline_t* line_a, fileline_t* line_b)
+{
+    utils_assert(line_a != NULL);
+    utils_assert(line_b != NULL);
+
+    return line_a->lnum > line_b->lnum;
+}
+
+io_err_t fileline_arr_put(fileline_arr_t* filearr, FILE* stream)
+{
+    for(size_t li = 0ul; li < filearr->lcnt; ++li)
+    {
+        if(fprintf(stream, "%s\n", filearr->arr[li].str) < 0) {
+            utils_log(
+                LOG_LEVEL_ERR, 
+                "file write error"
+            );
+            return IO_ERR_EOF_REACHED;
+        }
+    }
+
+    return IO_ERR_NONE;
 }
 
 void fileline_arr_free(fileline_arr_t* filearr)

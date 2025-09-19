@@ -26,7 +26,7 @@ char* file_linebuf_get(file_linebuf_t* linebuf, size_t i)
     utils_assert(linebuf != NULL);
     utils_assert(i < linebuf->line_cnt);
 
-    return (char*)((size_t)linebuf->buffer + linebuf->line_len * sizeof(char) * i);
+    return linebuf->buffer + linebuf->line_len * i;
 }
 
 void file_linebuf_swap_buffer(file_linebuf_t* linebuf, size_t ia, size_t ib, char* str_tmp)
