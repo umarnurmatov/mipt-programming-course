@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-typedef int (*utils_cmp)(void*,void*);
+typedef int (*utils_cmp)(const void*, const void*);
 
 void utils_swap(void* x, void* y, size_t tsize);
 

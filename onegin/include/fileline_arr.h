@@ -24,11 +24,11 @@ fileline_t* fileline_arr_get(fileline_arr_t* filearr, size_t i);
 
 void fileline_arr_swap(fileline_arr_t* filearr, size_t ia, size_t ib);
 
-int fileline_arr_linecmp(fileline_t* line_a, fileline_t* line_b);
+int fileline_arr_linecmp(const fileline_t* line_a, const fileline_t* line_b);
 
-int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b);
+int fileline_arr_linercmp(const fileline_t* line_a, const fileline_t* line_b);
 
-int fileline_arr_seqcmp(fileline_t* line_a, fileline_t* line_b);
+int fileline_arr_seqcmp(const fileline_t* line_a, const fileline_t* line_b);
 
 io_err_t fileline_arr_put(fileline_arr_t* filearr, FILE* stream);
 

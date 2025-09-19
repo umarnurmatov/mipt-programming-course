@@ -61,9 +61,16 @@ io_err_t fileline_arr_read(fileline_arr_t* filearr, FILE* stream)
     while(line) {
         filearr->arr[lcnt].str = line;
         filearr->arr[lcnt].lnum = lcnt;
+
         line = strtok(NULL, "\n");
-        filearr->arr[lcnt].len = 
-            (size_t)(line - filearr->arr[lcnt].str);
+
+        if(line == NULL)
+            filearr->arr[lcnt].len = 
+                utils_strlen(filearr->arr[lcnt].str);
+        else 
+            filearr->arr[lcnt].len = 
+                (size_t)(line - filearr->arr[lcnt].str) - 1ul;
+
         ++lcnt;
     }
 
@@ -89,7 +96,7 @@ void fileline_arr_swap(fileline_arr_t* filearr, size_t ia, size_t ib)
     filearr->arr[ib]    = tmp_line;
 }
 
-int fileline_arr_linecmp(fileline_t* line_a, fileline_t* line_b)
+int fileline_arr_linecmp(const fileline_t* line_a, const fileline_t* line_b)
 {
     utils_assert(line_a != NULL);
     utils_assert(line_b != NULL);
@@ -98,38 +105,42 @@ int fileline_arr_linecmp(fileline_t* line_a, fileline_t* line_b)
 }
 
 
-int fileline_arr_linercmp(fileline_t* line_a, fileline_t* line_b)
+int fileline_arr_linercmp(const fileline_t* line_a, const fileline_t* line_b)
 {
     utils_assert(line_a != NULL);
     utils_assert(line_b != NULL);
 
-    size_t line_a_len = utils_strlen(line_a->str);
-    size_t line_b_len = utils_strlen(line_b->str);
-
     char* str_a = line_a->str;
     char* str_b = line_b->str;
 
-    char* str_a_ptr = str_a + line_a_len;
-    char* str_b_ptr = str_b + line_b_len;
+    char* str_a_ptr = str_a + line_a->len;
+    char* str_b_ptr = str_b + line_b->len;
 
-    while((str_a_ptr != str_a) || (str_b_ptr != str_b))
+    while((str_a_ptr != str_a) && (str_b_ptr != str_b))
     {
-        --str_a_ptr;
-        --str_b_ptr;
-
-        if(!isalpha(*str_a_ptr) || !isalpha(*str_b_ptr))
+        if(!isalpha(*str_a_ptr)) {
+            --str_a_ptr;
             continue;
+        }
+
+        if(!isalpha(*str_b_ptr)) {
+            --str_b_ptr;
+            continue;
+        }
 
         if(*str_a_ptr > *str_b_ptr)
             return 1;
         else if(*str_a_ptr < *str_b_ptr)
             return -1;
+
+        --str_a_ptr;
+        --str_b_ptr;
     }
 
     return 0;
 }
 
-int fileline_arr_seqcmp(fileline_t* line_a, fileline_t* line_b)
+int fileline_arr_seqcmp(const fileline_t* line_a, const fileline_t* line_b)
 {
     utils_assert(line_a != NULL);
     utils_assert(line_b != NULL);
